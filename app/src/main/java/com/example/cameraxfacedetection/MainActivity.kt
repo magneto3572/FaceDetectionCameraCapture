@@ -1,19 +1,31 @@
 package com.example.cameraxfacedetection
 
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.MutableLiveData
 import com.example.cameraxfacedetection.camerax.CameraManager
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var cameraManager: CameraManager
     private var previewView : PreviewView?= null
+
+    object varib {
+        var newval : MutableLiveData<Boolean>? = MutableLiveData()
+        var isinside: Boolean by Delegates.observable(false) { property, oldValue, newValue ->
+            Log.d("LogNetwork", "$newValue")
+            newval?.value = newValue
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,7 +33,21 @@ class MainActivity : AppCompatActivity() {
         createCameraManager()
         checkForPermission()
         onClicks()
+
         previewView = findViewById(R.id.previewView_finder)
+
+        varib.newval?.observe(this) {
+            Log.d("LogTagStr", it.toString())
+            if (it){
+                btnSwitch.setBackgroundColor(Color.BLUE)
+                btnSwitch.setTextColor(Color.WHITE)
+                btnSwitch.isEnabled = true
+            }else{
+                btnSwitch.setBackgroundColor(Color.GRAY)
+                btnSwitch.setTextColor(Color.BLACK)
+                btnSwitch.isEnabled = false
+            }
+        }
     }
 
     private fun checkForPermission() {

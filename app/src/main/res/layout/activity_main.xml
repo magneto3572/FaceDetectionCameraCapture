@@ -9,7 +9,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnSwitch"
+        app:layout_constraintBottom_toBottomOf="@+id/btnSwitch"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -23,20 +23,21 @@
         <com.example.cameraxfacedetection.camerax.GraphicOverlay
             android:id="@+id/graphicOverlay_finder"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:background="#7f000000" />
 
         <LinearLayout
             android:id="@+id/layoutcut"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:elevation="2dp"
             android:alpha="0.4"
+            android:elevation="2dp"
+            android:orientation="horizontal"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:orientation="horizontal" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </FrameLayout>
 

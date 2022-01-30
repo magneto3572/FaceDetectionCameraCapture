@@ -2,8 +2,13 @@ package com.example.cameraxfacedetection.face_detection
 
 import android.graphics.*
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.example.cameraxfacedetection.MainActivity
 import com.example.cameraxfacedetection.camerax.GraphicOverlay
 import com.google.mlkit.vision.face.Face
+import kotlin.properties.Delegates
+
 
 class FaceContourGraphic(
     overlay: GraphicOverlay,
@@ -13,11 +18,10 @@ class FaceContourGraphic(
 
     private val facePositionPaint: Paint
     private val idPaint: Paint
-    private val boxPaint: Paint
+    private var boxPaint: Paint
 
     init {
         val selectedColor = Color.WHITE
-
         facePositionPaint = Paint()
         facePositionPaint.color = selectedColor
 
@@ -25,40 +29,58 @@ class FaceContourGraphic(
         idPaint.color = selectedColor
 
         boxPaint = Paint()
-        boxPaint.color = selectedColor
-        boxPaint.style = Paint.Style.STROKE
-        boxPaint.strokeWidth = BOX_STROKE_WIDTH
+
     }
 
     override fun draw(canvas: Canvas?) {
+
+        val viewportMargin = 120
+        val viewportCornerRadius = 100
+        val eraser = Paint()
+        eraser.isAntiAlias = true
+        eraser.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+        val width = canvas?.width?.toFloat()!! - viewportMargin
+        val height = width
+        val rect2 = RectF(viewportMargin.toFloat(), viewportMargin.toFloat(), width, height)
+
+        val frame = RectF(viewportMargin.toFloat() - 2, viewportMargin.toFloat() - 2, width + 4, height + 4)
+        val path = Path()
+        val stroke = Paint()
+        stroke.isAntiAlias = true
+        stroke.strokeWidth = 10f
+
         val rect = calculateRect(
             imageRect.height().toFloat(),
             imageRect.width().toFloat(),
             face.boundingBox
         )
-        canvas?.drawRect(rect, boxPaint)
 
-        val canvasW = canvas?.width
-        val canvasH = canvas?.height
-        val centerOfCanvas = Point(canvasW!! / 2, canvasH!! / 2)
-        val rectW = 900
-        val rectH = 900
-        val left: Int = centerOfCanvas.x - rectW / 2
-        val top: Int = centerOfCanvas.y - rectH + 120
-        val right: Int = centerOfCanvas.x + rectW / 2
-        val bottom: Int = centerOfCanvas.y + rectH / 14
-        val rect2 = RectF(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat())
-        canvas.drawRect(rect2, boxPaint)
+        boxPaint.color = Color.WHITE
+        boxPaint.style = Paint.Style.STROKE
+        boxPaint.strokeWidth = BOX_STROKE_WIDTH
 
         if (rect2.contains(rect)){
-            Log.d("LogTag", "Inside the rectangle")
+            stroke.color = Color.GREEN
+            Log.d("LogTag", "inside the rectangle")
+            MainActivity.varib.isinside = true
         }else{
+            stroke.color = Color.RED
             Log.d("LogTag", "outside the rectangle")
+            MainActivity.varib.isinside = false
         }
+
+        stroke.style = Paint.Style.STROKE
+        path.addRoundRect(frame, viewportCornerRadius.toFloat(), viewportCornerRadius.toFloat(), Path.Direction.CW)
+        canvas.drawPath(path, stroke)
+        canvas.drawRoundRect(rect2, viewportCornerRadius.toFloat(), viewportCornerRadius.toFloat(), eraser)
+        canvas.drawRect(rect, boxPaint)
+
     }
 
     companion object {
         private const val BOX_STROKE_WIDTH = 5.0f
     }
+
+
 
 }

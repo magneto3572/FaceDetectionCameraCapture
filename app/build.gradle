@@ -7,13 +7,12 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    compileSdkVersion 31
 
     defaultConfig {
         applicationId "com.example.cameraxfacedetection"
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
 
@@ -51,5 +50,7 @@ dependencies {
     implementation "androidx.camera:camera-core:${versions.cameraX}"
     implementation "androidx.camera:camera-lifecycle:${versions.cameraX}"
     implementation "androidx.camera:camera-view:1.0.0-alpha14"
+
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.0"
 
 }
